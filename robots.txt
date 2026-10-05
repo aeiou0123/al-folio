@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://aeiou0123.github.io/al-folio/sitemap.xml
