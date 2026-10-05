@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>法国政治光谱测试 | aeiou0123</title>
+    <meta
+      name="description"
+      content="一个 8 维、160 题、1-9 打分的法国政治光谱测试，包含党派/派系距离、多坐标视角、题目热力图和 PNG 分享。"
+    />
+    <link rel="canonical" href="https://aeiou0123.github.io/private-homepage/fr-spectrum/" />
+    <link rel="icon" href="../assets/favicon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="site-shell" id="top">
+      <header class="topbar">
+        <a class="brand" href="/private-homepage/spectrum/" aria-label="返回测试集合">
+          <span class="brand-mark" aria-hidden="true">FR</span>
+          <span>
+            <strong>FR Spectrum</strong>
+            <small>politics lab / public</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="页面导航">
+          <a href="/private-homepage/">私人主页</a>
+          <a href="/private-homepage/spectrum/">测试集合</a>
+          <a href="#quiz">开始</a>
+          <a href="#method">方法</a>
+          <a href="#sources">来源</a>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow">France political spectrum test</p>
+            <h1 id="hero-title">
+              <span>法国政治光谱</span>
+              <span>增强版测试</span>
+            </h1>
+            <p class="hero-lead">
+              用 8 个维度测量你在法国现实议题中的相对位置：经济分配、欧洲与主权、共和国身份、治安自由、生态生产、制度民粹、外交战略，以及国家能力与地方社会。
+              结果会给出画像标签、党派/派系距离、多坐标投影、议题热力图和影响结果最大的题目。
+            </p>
+            <div class="mode-actions" id="quiz">
+              <button class="mode-card" type="button" data-start-mode="quick">
+                <span>快速版</span>
+                <strong>40</strong>
+                <small>每维 5 题，适合先看大致坐标。</small>
+              </button>
+              <button class="mode-card is-featured" type="button" data-start-mode="standard">
+                <span>标准版</span>
+                <strong>80</strong>
+                <small>每维 10 题，覆盖主要法国议题。</small>
+              </button>
+              <button class="mode-card" type="button" data-start-mode="full">
+                <span>深度版</span>
+                <strong>160</strong>
+                <small>完整 8 维题库，结果更稳定。</small>
+              </button>
+            </div>
+            <p class="disclaimer">
+              1 表示完全不同意，9 表示完全同意，5 表示中立或不确定。结果只描述本题库内的政策距离，不构成投票建议。
+            </p>
+          </div>
+
+          <div class="hero-board" aria-hidden="true">
+            <div class="board-grid">
+              <span>D1</span><span>D2</span><span>D3</span><span>D4</span>
+              <span>D5</span><span>D6</span><span>D7</span><span>D8</span>
+            </div>
+            <b>8D<br />France</b>
+          </div>
+        </section>
+
+        <section class="panel quiz-panel is-hidden" id="quizPanel" aria-live="polite">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" id="modeLabel">mode</p>
+              <h2 id="questionCounter">第 1 题 / 80</h2>
+            </div>
+            <button class="ghost-button" type="button" id="restartTop">重新开始</button>
+          </div>
+          <div class="progress-shell" aria-hidden="true">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+
+          <article class="question-card">
+            <div class="question-meta">
+              <p class="axis-pill" id="axisLabel">维度</p>
+              <span id="issueLabel">议题</span>
+            </div>
+            <h3 id="questionText">题目加载中</h3>
+            <div class="scale-helper" aria-hidden="true">
+              <span>不同意</span>
+              <span>中立</span>
+              <span>同意</span>
+            </div>
+            <div class="scale-row" id="scaleRow"></div>
+          </article>
+
+          <div class="quiz-actions">
+            <button class="ghost-button" type="button" id="prevQuestion">上一题</button>
+            <span id="answeredCount">0 / 80</span>
+            <button class="ghost-button" type="button" id="skipQuestion">跳过</button>
+          </div>
+        </section>
+
+        <section class="panel result-panel is-hidden" id="resultPanel" aria-live="polite">
+          <div class="result-hero">
+            <p class="eyebrow">result</p>
+            <h2 id="resultTitle">混合型画像</h2>
+            <p id="resultSummary" class="result-summary"></p>
+            <p id="confidenceText" class="confidence-text"></p>
+            <div class="result-actions">
+              <button class="ghost-button" type="button" id="copyResult">复制结果摘要</button>
+              <button class="ghost-button" type="button" id="exportPng">导出 PNG</button>
+              <button class="ghost-button" type="button" id="restartBottom">重新测试</button>
+            </div>
+          </div>
+
+          <div class="result-layout">
+            <article class="result-card">
+              <h3>组合标签</h3>
+              <ul class="tag-list" id="tagList"></ul>
+            </article>
+            <article class="result-card chart-card">
+              <h3>八维雷达</h3>
+              <canvas id="radarCanvas" width="480" height="480"></canvas>
+            </article>
+            <article class="result-card map-card">
+              <h3>二维政治地图</h3>
+              <div class="coordinate-tabs" id="coordinateTabs"></div>
+              <div class="coordinate-map" id="coordinateMap">
+                <i class="x-line"></i>
+                <i class="y-line"></i>
+              </div>
+              <div class="map-labels">
+                <span id="mapXAxis">x axis</span>
+                <span id="mapYAxis">y axis</span>
+              </div>
+              <div class="map-legend" id="mapLegend"></div>
+            </article>
+          </div>
+
+          <section class="result-section">
+            <div class="section-heading compact">
+              <p class="eyebrow">analysis</p>
+              <h2>结果解读</h2>
+            </div>
+            <div class="interpretation-grid" id="interpretationGrid"></div>
+          </section>
+
+          <section class="result-section">
+            <div class="section-heading compact">
+              <p class="eyebrow">axis scores</p>
+              <h2>8 个维度</h2>
+            </div>
+            <div class="dimension-list" id="dimensionList"></div>
+          </section>
+
+          <section class="result-section">
+            <div class="section-heading compact">
+              <p class="eyebrow">policy distance</p>
+              <h2>党派/派系距离</h2>
+            </div>
+            <div class="view-tabs" id="matchViewTabs"></div>
+            <div class="match-list" id="matchList"></div>
+          </section>
+
+          <section class="result-section">
+            <div class="section-heading compact">
+              <p class="eyebrow">issue heatmap</p>
+              <h2>题目热力图</h2>
+            </div>
+            <div class="heatmap" id="heatmap"></div>
+          </section>
+
+          <section class="result-section">
+            <div class="section-heading compact">
+              <p class="eyebrow">strong signals</p>
+              <h2>影响结果最大的题目</h2>
+            </div>
+            <ul class="insight-list" id="strongestList"></ul>
+          </section>
+        </section>
+
+        <section class="method-section" id="method">
+          <div class="section-heading">
+            <p class="eyebrow">method</p>
+            <h2>设计方法</h2>
+          </div>
+          <div class="method-grid">
+            <article>
+              <span>01</span>
+              <h3>8 维法国模型</h3>
+              <p>法国政治不能只用传统左右轴描述，因此把福利国家、欧洲统合、共和国身份、治安自由、生态产业和制度民粹拆开测量。</p>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>160 题题库</h3>
+              <p>每维 20 题，正反向尽量平衡。快速版和标准版从同一题库抽取，深度版使用完整题库。</p>
+            </article>
+            <article>
+              <span>03</span>
+              <h3>启发式参照</h3>
+              <p>党派/派系坐标参考公开资料和专家调查入口做首版估计，不代表官方立场，也不会给出投票建议。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="sources-section" id="sources">
+          <div class="section-heading">
+            <p class="eyebrow">references</p>
+            <h2>参考资料入口</h2>
+          </div>
+          <ul class="source-list" id="sourceList"></ul>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p>Results are descriptive, not prescriptive.</p>
+        <a href="#top">Back to top</a>
+      </footer>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
