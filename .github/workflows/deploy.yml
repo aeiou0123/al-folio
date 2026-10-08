@@ -9,11 +9,15 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   deploy:
-    # available images: https://github.com/actions/runner-images#available-images
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
@@ -41,6 +45,13 @@ jobs:
           valueFile: "_config.yml"
           propertyPath: "giscus.repo"
           value: ${{ github.repository }}
+      - name: Adjust baseurl for repository
+        run: |
+          if [ "${{ github.repository }}" = "aeiou0123/al-folio" ]; then
+            sed -i 's|^baseurl:.*|baseurl: /al-folio|' _config.yml
+          else
+            sed -i 's|^baseurl:.*|baseurl: ""|' _config.yml
+          fi
       - name: Install and Build 🔧
         run: |
           sudo apt-get update && sudo apt-get install -y imagemagick
@@ -51,8 +62,17 @@ jobs:
         run: |
           npm install -g purgecss
           purgecss -c purgecss.config.js
-      - name: Deploy 🚀
-        if: github.event_name != 'pull_request'
+      - name: Deploy to gh-pages branch 🚀 (for al-folio preview)
+        if: github.repository == 'aeiou0123/al-folio'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: _site
+      - name: Upload artifact 📦 (for main site aeiou0123.github.io)
+        if: github.repository != 'aeiou0123/al-folio'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+      - name: Deploy to GitHub Pages 🚀 (for main site aeiou0123.github.io)
+        if: github.repository != 'aeiou0123/al-folio'
+        id: deployment
+        uses: actions/deploy-pages@v4

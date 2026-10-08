@@ -2,7 +2,7 @@
 layout: page
 title: "Course Notes & Academic Materials"
 description: "Curated lecture notes, problem sets, and solution keys across undergraduate economics and mathematics courses."
-importance: 2
+importance: 3
 category: work
 redirect: /notes/
 ---
